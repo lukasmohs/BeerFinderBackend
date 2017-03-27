@@ -20,11 +20,15 @@ public class BeerFinder extends HttpServlet {
     protected void doGet(HttpServletRequest request,
             HttpServletResponse response)
             throws ServletException, IOException {
+        
+        APIConnection apiConnection = new APIConnection();
+        
+        String res = apiConnection.getBars("40.4446102", "-79.948537", "400");
 
         PrintWriter out = response.getWriter(); 
         response.setStatus(200);
         // Wrap the status message into XML and send it to the client
-        out.println("Hi Fabi, soon you will find Beer here :)");
+        out.println(res);
     }
     
 }
