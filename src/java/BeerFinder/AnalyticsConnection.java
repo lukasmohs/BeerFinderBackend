@@ -14,10 +14,10 @@ import org.json.JSONObject;
 public class AnalyticsConnection {
     private static String mLABAPIKey = "Jq17pqvUE3A3sDLkHCN0TKr7rmzyVa7l";
     
-    public static void logActivity(String timeStamp, String lat, String lon, String radius, String device) {
+    public static void logActivity(String timeStamp, String lat, String lon, String radius, String device, String numberOfAnswers) {
         
         int status;
-        String JSONMessage = createXMLMessage(timeStamp, lat, lon, radius, device);
+        String JSONMessage = createXMLMessage(timeStamp, lat, lon, radius, device, numberOfAnswers);
         
         try {  
                 // Make call to a particular URL
@@ -43,20 +43,10 @@ public class AnalyticsConnection {
             catch (IOException e) {
 		System.out.println("An IO Exception was thrown");
 	    }
-        
-        /*POST /databases/{database}/collections/{collection}
-        Content-Type: application/json
-        Body: <JSON data>
 
-        Example (using jQuery):
-
-            $.ajax( { url: "https://api.mlab.com/api/1/databases/my-db/collections/my-coll?apiKey=myAPIKey",
-		  data: JSON.stringify( { "x" : 1 } ),
-		  type: "POST",
-		  contentType: "application/json" } );*/
     }
     
-    private static String createXMLMessage(String timeStamp, String lat, String lon, String radius, String device) {
+    private static String createXMLMessage(String timeStamp, String lat, String lon, String radius, String device, String numberOfAnswers) {
 
         JSONObject root = new JSONObject();
 
@@ -65,6 +55,8 @@ public class AnalyticsConnection {
         root.put("lon", lon);
         root.put("radius", radius);
         root.put("device", device);
+        root.put("numberOfAnswers", numberOfAnswers);
+        System.out.println("logging to server: " + root.toString());
         return root.toString();
     }
 }

@@ -43,7 +43,7 @@ public class APIConnection {
             ArrayList barList = parseServerResponseIntoBars(res);
             
             res = createJSONResponse(barList);
-            AnalyticsConnection.logActivity(new Date().toString(),latitude, longitude, radius, os);
+            AnalyticsConnection.logActivity(new Date().toString(),latitude, longitude, radius, os, barList.size() + "");
            
         } catch (Exception ex) {
             Logger.getLogger(APIConnection.class.getName()).log(Level.SEVERE, null, ex);
