@@ -20,13 +20,23 @@ public class BeerFinder extends HttpServlet {
     protected void doGet(HttpServletRequest request,
             HttpServletResponse response)
             throws ServletException, IOException {
-        
+        String res = "";
         APIConnection apiConnection = new APIConnection();
+        String lat = request.getParameter("lat");
+        String lon = request.getParameter("lon");
+        String radius = request.getParameter("radius");
+        if(lat != null && lon != null && radius != null && 
+                !lat.isEmpty()&&!lon.isEmpty()&&!radius.isEmpty()) {
+            res = apiConnection.getBars(lat, lon, radius);
+            response.setStatus(200);
+        } else {
+            res = "Please check the provided parameters";
+            response.setStatus(404);
+        }
         
-        String res = apiConnection.getBars("40.4446102", "-79.948537", "400");
 
         PrintWriter out = response.getWriter(); 
-        response.setStatus(200);
+
         // Wrap the status message into XML and send it to the client
         out.println(res);
     }

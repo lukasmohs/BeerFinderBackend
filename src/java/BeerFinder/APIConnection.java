@@ -8,9 +8,11 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.net.ssl.HttpsURLConnection;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -30,12 +32,58 @@ public class APIConnection {
 
 
             System.out.println("token: " + token);
-             res = sendRequestForBars(latitude, longitude, radius, token);
+            res = sendRequestForBars(latitude, longitude, radius, token);
+            System.out.println("response: " + res);
+            ArrayList barList = parseServerResponseIntoBars(res);
+            
+            res = createJSONResponse(barList);
+           
         } catch (Exception ex) {
             Logger.getLogger(APIConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         return res;
+    }
+    
+    private static ArrayList<Bar> parseServerResponseIntoBars(String response) {
+        ArrayList barList = new ArrayList<Bar>();
+        // Instantiate a JSON Tokener with the provided JSON message from a client in form of a String
+        JSONTokener tokener = new JSONTokener(response);
+        // Instatiate a JSON object from the Tokenener
+        JSONObject js = new JSONObject(tokener);     
+        // Loop over all installers in the in the company
+        JSONArray ja =  js.getJSONArray("businesses");
+        for(int i = 0; i< ja.length(); i++) {
+            JSONObject o = ja.getJSONObject(i);
+            System.out.println("object " + i + ": " + o.toString());
+            barList.add(new Bar(
+            o.getString("name"), o.getJSONObject("location").getString("address1"),o.getJSONObject("coordinates").getDouble("latitude") + "",
+            o.getJSONObject("coordinates").getDouble("longitude") + "",o.getString("price")));
+        }
+        return barList;
+    }
+    
+    private static String createJSONResponse(ArrayList<Bar> barList) {
+        String response = "";
+        
+        JSONObject root = new JSONObject();
+        
+        JSONArray bars = new JSONArray();
+
+        for(Bar bar : barList) {    
+            JSONObject o = new JSONObject();
+            o.put("name",bar.getName());
+            o.put("price", bar.getPrice());
+            o.put("lat", bar.getLat());
+            o.put("lon", bar.getLon());
+            o.put("address", bar.getAddress());
+            bars.put(o);
+        }
+        
+        root.put("bars", bars);
+
+        
+        return root.toString();
     }
     
     private static String getTokenFromJSON(String message) {
