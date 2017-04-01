@@ -9,6 +9,7 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.net.ssl.HttpsURLConnection;
@@ -28,7 +29,7 @@ public class APIConnection {
     private static String APIURL = "https://api.yelp.com/v3/businesses/search?term=bar";
     
     
-    public static String getBars(String latitude, String longitude, String radius) {
+    public static String getBars(String latitude, String longitude, String radius, String os) {
        String res="";
         try {
             String tokenMessage = requestToken();
@@ -42,6 +43,7 @@ public class APIConnection {
             ArrayList barList = parseServerResponseIntoBars(res);
             
             res = createJSONResponse(barList);
+            AnalyticsConnection.logActivity(new Date().toString(),latitude, longitude, radius, os);
            
         } catch (Exception ex) {
             Logger.getLogger(APIConnection.class.getName()).log(Level.SEVERE, null, ex);

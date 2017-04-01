@@ -22,12 +22,13 @@ public class BeerFinder extends HttpServlet {
             throws ServletException, IOException {
         String res = "";
         APIConnection apiConnection = new APIConnection();
+        String os = request.getParameter("os");
         String lat = request.getParameter("lat");
         String lon = request.getParameter("lon");
         String radius = request.getParameter("radius");
-        if(lat != null && lon != null && radius != null && 
-                !lat.isEmpty()&&!lon.isEmpty()&&!radius.isEmpty()) {
-            res = apiConnection.getBars(lat, lon, radius);
+        if(lat != null && lon != null && radius != null && os != null &&
+                !lat.isEmpty()&&!lon.isEmpty()&&!radius.isEmpty()&&!os.isEmpty()) {
+            res = apiConnection.getBars(lat, lon, radius,os);
             response.setStatus(200);
         } else {
             res = "Please check the provided parameters";
