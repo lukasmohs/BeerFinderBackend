@@ -22,6 +22,11 @@ import org.json.JSONTokener;
  */
 public class APIConnection {
     
+    private static String AUTHENTICATIONURL = "https://api.yelp.com/oauth2/token";
+    private static String CLIENTSECRET = "FdzTGMvEVEUNz8DFF8lxxxna0MxERPSV78xgCYbOfdCS3Zzd5Ny81aq4KxMky62F";
+    private static String CLIENTID = "vxocNW4lfJ46sqiEG7saXg";
+    private static String APIURL = "https://api.yelp.com/v3/businesses/search?term=bar";
+    
     
     public static String getBars(String latitude, String longitude, String radius) {
        String res="";
@@ -98,7 +103,7 @@ public class APIConnection {
     private static String requestToken() throws MalformedURLException, ProtocolException, IOException{
 
         String res = null;
-        String url = "https://api.yelp.com/oauth2/token";
+        String url = AUTHENTICATIONURL;
         URL obj;
         obj = new URL(url);
         HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
@@ -108,8 +113,8 @@ public class APIConnection {
         con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
         con.setRequestProperty("Cache-Control", "no-cache");
 
-        String urlParameters = "client_id=vxocNW4lfJ46sqiEG7saXg"
-            + "&client_secret=FdzTGMvEVEUNz8DFF8lxxxna0MxERPSV78xgCYbOfdCS3Zzd5Ny81aq4KxMky62F"
+        String urlParameters = "client_id=" + CLIENTID
+            + "&client_secret=" + CLIENTSECRET 
             + "&grant_type=client_credentials";
 
         // Send post request
@@ -137,7 +142,7 @@ public class APIConnection {
     
     private static String sendRequestForBars(String latitude, String longitude, String radius, String token) throws Exception {
 
-		String url = "https://api.yelp.com/v3/businesses/search?term=bar";
+		String url = APIURL;
                 
                 url += "&latitude="+latitude;
                 url += "&longitude="+longitude;
