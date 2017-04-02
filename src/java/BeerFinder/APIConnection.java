@@ -89,7 +89,6 @@ public class APIConnection {
         
         root.put("bars", bars);
 
-        
         return root.toString();
     }
     
