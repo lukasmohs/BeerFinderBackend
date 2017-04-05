@@ -17,7 +17,7 @@ public class AnalyticsConnection {
     public static void logActivity(String timeStamp, String lat, String lon, String radius, String os, String numberOfAnswers, String device) {
         
         int status;
-        String JSONMessage = createXMLMessage(timeStamp, lat, lon, radius, device, numberOfAnswers, os);
+        String JSONMessage = createXMLMessage(timeStamp, lat, lon, radius, device, os, numberOfAnswers);
         
         try {  
                 // Make call to a particular URL
