@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name = "BeerFinder",
         urlPatterns = {"/getBeer"})
-public class BeerFinder extends HttpServlet {
+public class BeerFinderServlet extends HttpServlet {
     
      @Override
     protected void doGet(HttpServletRequest request,
@@ -23,12 +23,13 @@ public class BeerFinder extends HttpServlet {
         String res = "";
         APIConnection apiConnection = new APIConnection();
         String os = request.getParameter("os");
+        String device = request.getParameter("device");
         String lat = request.getParameter("lat");
         String lon = request.getParameter("lon");
         String radius = request.getParameter("radius");
-        if(lat != null && lon != null && radius != null && os != null &&
-                !lat.isEmpty()&&!lon.isEmpty()&&!radius.isEmpty()&&!os.isEmpty()) {
-            res = apiConnection.getBars(lat, lon, radius,os);
+        if(lat != null && lon != null && radius != null && os != null && device != null &&
+                !lat.isEmpty()&&!lon.isEmpty()&&!radius.isEmpty()&&!os.isEmpty() && !device.isEmpty()) {
+            res = apiConnection.getBars(lat, lon, radius, os, device);
             response.setStatus(200);
         } else {
             res = "Please check the provided parameters";

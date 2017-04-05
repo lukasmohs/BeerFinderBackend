@@ -29,7 +29,7 @@ public class APIConnection {
     private static String APIURL = "https://api.yelp.com/v3/businesses/search?term=bar";
     
     
-    public static String getBars(String latitude, String longitude, String radius, String os) {
+    public static String getBars(String latitude, String longitude, String radius, String os, String device) {
        String res="";
         try {
             String tokenMessage = requestToken();
@@ -43,7 +43,7 @@ public class APIConnection {
             ArrayList barList = parseServerResponseIntoBars(res);
             
             res = createJSONResponse(barList);
-            AnalyticsConnection.logActivity(new Date().getTime()+"",latitude, longitude, radius, os, barList.size() + "");
+            AnalyticsConnection.logActivity(new Date().getTime()+"",latitude, longitude, radius, os, barList.size() + "", device);
            
         } catch (Exception ex) {
             Logger.getLogger(APIConnection.class.getName()).log(Level.SEVERE, null, ex);

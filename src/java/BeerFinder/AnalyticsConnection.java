@@ -14,10 +14,10 @@ import org.json.JSONObject;
 public class AnalyticsConnection {
     private static String mLABAPIKey = "Jq17pqvUE3A3sDLkHCN0TKr7rmzyVa7l";
     
-    public static void logActivity(String timeStamp, String lat, String lon, String radius, String device, String numberOfAnswers) {
+    public static void logActivity(String timeStamp, String lat, String lon, String radius, String os, String numberOfAnswers, String device) {
         
         int status;
-        String JSONMessage = createXMLMessage(timeStamp, lat, lon, radius, device, numberOfAnswers);
+        String JSONMessage = createXMLMessage(timeStamp, lat, lon, radius, device, numberOfAnswers, os);
         
         try {  
                 // Make call to a particular URL
@@ -46,7 +46,7 @@ public class AnalyticsConnection {
 
     }
     
-    private static String createXMLMessage(String timeStamp, String lat, String lon, String radius, String device, String numberOfAnswers) {
+    private static String createXMLMessage(String timeStamp, String lat, String lon, String radius, String device, String os, String numberOfAnswers) {
 
         JSONObject root = new JSONObject();
 
@@ -54,6 +54,7 @@ public class AnalyticsConnection {
         root.put("lat", lat);
         root.put("lon", lon);
         root.put("radius", radius);
+        root.put("os", os);
         root.put("device", device);
         root.put("numberOfAnswers", numberOfAnswers);
         System.out.println("logging to server: " + root.toString());
