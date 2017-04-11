@@ -10,66 +10,93 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.net.ssl.HttpsURLConnection;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
 /**
- *
+ * This class serves the purpose of a delegate for the Yelp API calls initialized by the Servlet.
+ * It provides static methods to first request a authentication token: requestToken() 
+ * and execute then the API call: sendRequestForBars().
+ * Besides that, two parsing methods evaluate the API responses: getTokenFromJSON(), parseServerResponseIntoBars()
+ * and one method converts a message to JSON: createJSONResponse().
+ * The logActivity() method basically writes all activities to a third party MongoDB instance.
  * @author lukasmohs
  */
 public class APIConnection {
     
+    // Credentials for Yelp API
     private static String AUTHENTICATIONURL = "https://api.yelp.com/oauth2/token";
     private static String CLIENTSECRET = "FdzTGMvEVEUNz8DFF8lxxxna0MxERPSV78xgCYbOfdCS3Zzd5Ny81aq4KxMky62F";
     private static String CLIENTID = "vxocNW4lfJ46sqiEG7saXg";
     private static String APIURL = "https://api.yelp.com/v3/businesses/search?term=bar";
     
     
+    /**
+     * This method is capable of querying the third party (Yelp) API for Bars by first requesting a token
+     * based on application credentials and all of the provided details from the user so that it finally returns
+     * a JSON formatted message for the Android client device.
+     * The message exchange is realized in JSON and all the request and some response details are sent 
+     * to the MongoDB instance for persistence purposes.
+     * @param latitude
+     * @param longitude
+     * @param radius
+     * @param os
+     * @param device
+     * @return JSON formatted String containing the search results
+     */
     public static String getBars(String latitude, String longitude, String radius, String os, String device) {
        String res="";
         try {
+            // Request the API Authentication token
             String tokenMessage = requestToken();
-            System.out.println(tokenMessage);
             String token = getTokenFromJSON(tokenMessage);
-
-
-            System.out.println("token: " + token);
+            // Query the Yelp API for results based on latitude, longitude and the radius
             res = sendRequestForBars(latitude, longitude, radius, token);
-            System.out.println("response: " + res);
+            // Parse the API response to a list of bar entities
             ArrayList barList = parseServerResponseIntoBars(res);
-            
+            // Create a JSON formatted response containing all bars that were found
             res = createJSONResponse(barList);
+            // Persist the request for analytics pruposes on the MongoDB instance
             AnalyticsConnection.logActivity(new Date().getTime()+"",latitude, longitude, radius, os, barList.size() + "", device);
            
         } catch (Exception ex) {
-            Logger.getLogger(APIConnection.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("An Exception was thrown");
         }
-        
+        // Return the JSON formatted client message
         return res;
     }
     
+    /**
+     * This method takes the response from the Yelp API into entity Bar objects
+     * @param response
+     * @return the retrieved list of Bars
+     */
     private static ArrayList<Bar> parseServerResponseIntoBars(String response) {
         ArrayList barList = new ArrayList<Bar>();
-        // Instantiate a JSON Tokener with the provided JSON message from a client in form of a String
+        // Instantiate a JSON Tokener with the provided JSON message from API in form of a String
         JSONTokener tokener = new JSONTokener(response);
         // Instatiate a JSON object from the Tokenener
         JSONObject js = new JSONObject(tokener);     
-        // Loop over all installers in the in the company
+        // Loop over all bars in the in the "business" array
         JSONArray ja =  js.getJSONArray("businesses");
         for(int i = 0; i< ja.length(); i++) {
             JSONObject o = ja.getJSONObject(i);
-            System.out.println("object " + i + ": " + o.toString());
+            // For each item, create a new Bar object based on the provided information and add it to the list
             barList.add(new Bar(
             o.getString("name"), o.getJSONObject("location").getString("address1"),o.getJSONObject("coordinates").getDouble("latitude") + "",
             o.getJSONObject("coordinates").getDouble("longitude") + "",o.getString("price")));
         }
+        // Return the list
         return barList;
     }
     
+    /**
+     * 
+     * @param barList
+     * @return 
+     */
     private static String createJSONResponse(ArrayList<Bar> barList) {
         String response = "";
         
