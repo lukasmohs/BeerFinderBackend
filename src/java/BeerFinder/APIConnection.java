@@ -134,80 +134,88 @@ public class APIConnection {
         return js.getString("access_token");
     }
         
+    /**
+     * This method sends a HTTP request to the authentication URL of the Yelp API by providing
+     * the required credentials.
+     * @return the  answer message from the authentication endpoint
+     * @throws MalformedURLException
+     * @throws ProtocolException
+     * @throws IOException 
+     */
     private static String requestToken() throws MalformedURLException, ProtocolException, IOException{
-
         String res = null;
         String url = AUTHENTICATIONURL;
         URL obj;
         obj = new URL(url);
         HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
-
+        
         //add reuqest header
         con.setRequestMethod("POST");
         con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
         con.setRequestProperty("Cache-Control", "no-cache");
-
-        String urlParameters = "client_id=" + CLIENTID
+        
+        // Add the credentials together in a Strnig of key:value pairs
+        String message = "client_id=" + CLIENTID
             + "&client_secret=" + CLIENTSECRET 
             + "&grant_type=client_credentials";
 
         // Send post request
         con.setDoOutput(true);
         DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-        wr.writeBytes(urlParameters);
+        wr.writeBytes(message);
         wr.flush();
+        // Close the connection
         wr.close();
-
-        int responseCode = con.getResponseCode();
-
         BufferedReader in = new BufferedReader(
                 new InputStreamReader(con.getInputStream()));
         String inputLine;
         StringBuffer response = new StringBuffer();
-
+        // read the answer
         while ((inputLine = in.readLine()) != null) {
                 response.append(inputLine);
         }
         in.close();
-
+        // return the answer as a String
         res = response.toString();
         return res;
     }
     
+    /**
+     * This method realizes the Yelp API call by sending several parameters via HTTP to the interface endpoint.
+     * @param latitude
+     * @param longitude
+     * @param radius
+     * @param token
+     * @return String representation of the answer of the server API
+     * @throws Exception 
+     */
     private static String sendRequestForBars(String latitude, String longitude, String radius, String token) throws Exception {
-
-		String url = APIURL;
-                
-                url += "&latitude="+latitude;
-                url += "&longitude="+longitude;
-                url += "&radius="+radius;
-
-		URL obj = new URL(url);
-		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-
-		// optional default is GET
-		con.setRequestMethod("GET");
-
-                con.setRequestProperty("Authorization", "Bearer "+token);
-                
-		int responseCode = con.getResponseCode();
-		System.out.println("\nSending 'GET' request to URL : " + url);
-		System.out.println("Response Code : " + responseCode);
-
-		BufferedReader in = new BufferedReader(
-		        new InputStreamReader(con.getInputStream()));
-		String inputLine;
-		StringBuffer response = new StringBuffer();
-
-		while ((inputLine = in.readLine()) != null) {
-			response.append(inputLine);
-		}
-		in.close();
-
-		//print result
-		return response.toString();
-
-	}
-
-
+        String url = APIURL;
+        
+        // Add the GET parameters to the URL
+        url += "&latitude="+latitude;
+        url += "&longitude="+longitude;
+        url += "&radius="+radius;
+        URL obj = new URL(url);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        con.setRequestMethod("GET");
+        
+        // Add authorization property
+        con.setRequestProperty("Authorization", "Bearer "+token);
+        int responseCode = con.getResponseCode();
+        
+        // Create BufferedReader
+        BufferedReader in = new BufferedReader(
+                new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+        // Read the response line per line
+        while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+        }
+        // CLose reader
+        in.close();
+        // Return result as String
+        return response.toString();
+    }
 }
