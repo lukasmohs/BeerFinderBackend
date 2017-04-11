@@ -93,17 +93,17 @@ public class APIConnection {
     }
     
     /**
-     * 
+     * This method takes a list of bars and creates a JSON message out of it to sent it to the client
      * @param barList
-     * @return 
+     * @return String representation of JSON formatted list of bar objects
      */
     private static String createJSONResponse(ArrayList<Bar> barList) {
         String response = "";
-        
+        // Create root JSONObject
         JSONObject root = new JSONObject();
-        
+        // Create JSON Array to add all bars to
         JSONArray bars = new JSONArray();
-
+        // For each bar, create a JSONObject with all vlaues and add it to the bars array
         for(Bar bar : barList) {    
             JSONObject o = new JSONObject();
             o.put("name",bar.getName());
@@ -114,17 +114,23 @@ public class APIConnection {
             bars.put(o);
         }
         
+        // Add the bars array to the root  JSONObject
         root.put("bars", bars);
-
+        // Return a String representation
         return root.toString();
     }
     
+    /**
+     * This method takes the response of the authentication endpoint and retrieves the token out of it
+     * @param message
+     * @return String representation of Yelp API access token
+     */
     private static String getTokenFromJSON(String message) {
-        // Instantiate a JSON Tokener with the provided JSON message from a client in form of a String
+        // Instantiate a JSON Tokener
         JSONTokener tokener = new JSONTokener(message);
         // Instatiate a JSON object from the Tokenener
         JSONObject js = new JSONObject(tokener);
-        // Loop over all installers in the in the company
+        // Get the access_token Strin out of the object and return it
         return js.getString("access_token");
     }
         
