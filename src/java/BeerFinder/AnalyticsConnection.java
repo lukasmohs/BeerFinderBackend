@@ -14,9 +14,9 @@ import org.json.JSONObject;
  */
 public class AnalyticsConnection {
     // MongoDB credentials
-    private static String mLABAPIKey = "Jq17pqvUE3A3sDLkHCN0TKr7rmzyVa7l";
-    private static String MONGODBNAME = "beerfinder";
-    private static String MONGODBCOLLECTIONNAME = "activity";
+    private static String mLABAPIKey = Credentials.getmLABAPIKey();
+    private static String MONGODBNAME = Credentials.getMONGODBNAME();
+    private static String MONGODBCOLLECTIONNAME = Credentials.getMONGODBCOLLECTIONNAME();
     
     /**
      * This function is invokes to first wrap all provided arguments into a JSON message and to then sent it to the
