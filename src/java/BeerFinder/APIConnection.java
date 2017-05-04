@@ -27,10 +27,10 @@ import org.json.JSONTokener;
 public class APIConnection {
     
     // Credentials for Yelp API
-    private static String AUTHENTICATIONURL = "https://api.yelp.com/oauth2/token";
-    private static String CLIENTSECRET = "FdzTGMvEVEUNz8DFF8lxxxna0MxERPSV78xgCYbOfdCS3Zzd5Ny81aq4KxMky62F";
-    private static String CLIENTID = "vxocNW4lfJ46sqiEG7saXg";
-    private static String APIURL = "https://api.yelp.com/v3/businesses/search?term=bar";
+    private static String AUTHENTICATIONURL = Credentials.getAUTHENTICATIONURL();
+    private static String CLIENTSECRET = Credentials.getCLIENTSECRET();
+    private static String CLIENTID = Credentials.getCLIENTID();
+    private static String APIURL = Credentials.getAPIURL();
     
     
     /**
