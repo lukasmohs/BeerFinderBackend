@@ -84,9 +84,14 @@ public class APIConnection {
         for(int i = 0; i< ja.length(); i++) {
             JSONObject o = ja.getJSONObject(i);
             // For each item, create a new Bar object based on the provided information and add it to the list
+            String price = "?";
+            // In case, no price is provided
+            if(o.has("price")) {
+                price = o.getString("price");
+            }
             barList.add(new Bar(
             o.getString("name"), o.getJSONObject("location").getString("address1"),o.getJSONObject("coordinates").getDouble("latitude") + "",
-            o.getJSONObject("coordinates").getDouble("longitude") + "",o.getString("price")));
+            o.getJSONObject("coordinates").getDouble("longitude") + "",price));
         }
         // Return the list
         return barList;
